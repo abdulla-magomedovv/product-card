@@ -1,3 +1,9 @@
+import { Modal } from "./modal.js";
+import { Form } from "./form.js";
+
+const modal = new Modal("modal-main");
+
+
 const form = document.querySelector(".footer__email-form");
 const emailInput = document.querySelector("#email");
 
@@ -14,43 +20,30 @@ form.addEventListener("submit", (event) => {
   }
 });
 
-const modal = document.querySelector(".modal");
-const closeButton = document.querySelector(".modal__close-button");
-
-closeButton.addEventListener("click", () => {
-  modalForm.reset();
-  modal.classList.remove("modal-showed");
-});
-
 const registrationButton = document.querySelector("#registration");
 registrationButton.addEventListener("click", () => {
-  modalForm.reset();
-  modal.classList.add("modal-showed");
+   modal.open();
 });
 
 let user;
-const modalForm = document.querySelector(".modal__form");
-modalForm.addEventListener("submit", (event) => {
+const modalForm = new Form("modal-form");
+modalForm.form.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (modalForm.checkValidity()) {
-    const firstName = document.querySelector("#firstname").value;
-    const lastName = document.querySelector("#lastname").value;
-    const dateOfBirth = document.querySelector("#date").value;
-    const login = document.querySelector("#login").value;
-    const passwordValue = document.querySelector("#password").value;
-    const repeatPasswordValue = document.querySelector("#repeat-password").value;
+  if (modalForm.isValid()) {
+    const values = modalForm.getValues();
     user = {
-      firstName: firstName,
-      lastName: lastName,
-      dateOfBirth: dateOfBirth,
-      login: login,
-      password: passwordValue,
-      repeatPassword: repeatPasswordValue,
+      firstName: values.firstname,
+      lastName: values.lastname,
+      dateOfBirth: values.date,
+      login: values.login,
+      password: values.password,
+      repeatPassword: values["repeat-password"],
       createdOn: new Date(),
     };
     console.log(user);
     console.log("Форма отправлена");
-    modal.classList.remove("modal-showed");
+    modalForm.reset();
+    modal.close();
   } else {
     alert("Регистрация отклонена");
   }
